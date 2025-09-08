@@ -1,0 +1,34 @@
+def pdfGenfunction(PDFdata):
+    raport = PDFdata
+    air_data = raport.getAirData()
+    num_columns = 5
+
+    header=[f"Colums: {i+1}" for i in range(num_columns)]
+    table_data = [header]
+
+    for i in range(0, len(air_data), num_columns):
+        row = air_data[i:i+num_columns]
+        if len(row) < num_columns:
+            row += [''] * (num_columns - len(row))
+        table_data.append(row)
+
+    table_data2 = [['Average Air Quality']]
+    table_data2.append([raport.getAirdataByIndex(0)])
+
+    table = Table(table_data, repeatRows=1, splitByRow=1)
+    table2 = Table(table_data2)
+
+    drawing = Drawing(400, 200)
+    drawing.add(String(200, 180, 'Air Flux Stability', fontSize=14, textAnchor='middle'))
+    lp = LinePlot()
+    lp.x = 50
+    lp.y = 50
+    lp.height = 100
+    lp.width = 300
+    lp.data = [list(enumerate(raport.getAirData()[:-1]))]
+    lp.lines[0].strokeColor = colors.blue
+    drawing.add(lp)
+
+    doc = SimpleDocTemplate("Raport.pdf" , pagesize=letter)
+    elements = [table, table2, Spacer(1, 20), drawing]
+    doc.build(elements)

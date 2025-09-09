@@ -23,7 +23,7 @@ if __name__ == '__main__':
                        379.5, 50.3)
 
 
-    testdata3 = PDFdata("SN1234567811",[0.78,4.80,4.02,0.90,1.11],13.0,50.0)
+    testdata3 = PDFdata("SN1234567811",[0.78,4.80,4.02,0.90,1.11,1.15,1.26,1.18],13.0,50.0)
 
     testdata4 = PDFdata("SN1234567811", [[0.78, 4.80, 4.02],[ 0.90, 1.11]], 13.0, 50.0)
 
@@ -52,13 +52,13 @@ if __name__ == '__main__':
     # print(repo.get_data())
 
 # TESTING PDF GENERATION
-    repo.saveData(testdata2)
+    repo.saveData(testdata)
     pdfGenfunction(repo.get_data_by_serial("SN1234567810"))
     # sqlrepo.saveData(PDF)
     print("PDF generated!")
-    #
+    # #
     # repo.saveData(testdata3)
-    #
-    # converted = voltToAirFlow(testdata4)
-    # testdata4.setAirData(converted)
-    # print(testdata4.getAirData())
+    # #
+    # converted = voltToAirFlow(testdata3)
+    # testdata3.setAirData(converted)
+    # print(testdata3.getAirData())

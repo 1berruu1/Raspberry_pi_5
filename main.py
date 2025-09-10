@@ -1,6 +1,6 @@
 import reportlab
 
-from AuxFuncion import pdfGenfunction, readSerial, pasreData, voltToAirFlow
+from AuxFuncion import pdfGenfunction, readSerial, pasreData, voltToAirFlow, readSoundSensor
 from Domain import PDFdata
 from Repo import Repository, RepositorySQL
 
@@ -52,13 +52,21 @@ if __name__ == '__main__':
     # print(repo.get_data())
 
 # TESTING PDF GENERATION
-    repo.saveData(testdata)
-    pdfGenfunction(repo.get_data_by_serial("SN1234567810"))
+#     repo.saveData(testdata)
+    # pdfGenfunction(repo.get_data_by_serial("SN1234567810"))
     # sqlrepo.saveData(PDF)
-    print("PDF generated!")
+    # print("PDF generated!")
     # #
     # repo.saveData(testdata3)
     # #
     # converted = voltToAirFlow(testdata3)
     # testdata3.setAirData(converted)
     # print(testdata3.getAirData())
+
+# SOUND DATA FUNCTION
+#     repo.saveData(testdata)
+#
+#     new_sound_data = readSoundSensor("SoundReading.txt")
+#     testdata.setSoundData(new_sound_data)
+#     print(testdata.getSerial())
+#     print(testdata.getSoundData())

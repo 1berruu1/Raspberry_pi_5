@@ -1,4 +1,5 @@
 import sqlite3
+import pathlib
 
 class Repository:
     """
@@ -51,6 +52,17 @@ class Repository:
             PDFdata: The updated PDFdata object.
         """
         self.__data[PDFdata.getSerial()] = PDFdata
+
+class FileLogRepo:
+    def __init__(self,PDFdata):
+        self.__file = open(f'{PDFdata.getSerial()}-log.txt',"r")
+
+    def saveToFile(self, PDFdata):
+        with open(f'file-log-{PDFdata.getSerial()}.txt', 'w') as file:
+            for obj in PDFdata:
+                file.write(str(obj))
+
+
 
 
 class RepositorySQL:

@@ -1,3 +1,5 @@
+import csv
+import itertools
 import time
 import serial
 from Exceptions import PDFException, SensorException
@@ -18,13 +20,17 @@ def readLightSensor():
     """
     pass
 
-def readSoundSensor():
+def readSoundSensor(file):
     """
     Reads data from the sound sensor.
     Returns:
         The sensor reading (to be implemented).
     """
-    pass
+    values = pd.read_csv(file,skiprows=1, usecols=[2])
+    value_column_3 = values.iloc[:, 0].tolist()
+    return value_column_3
+
+
 
 def cameraSerial():
     """

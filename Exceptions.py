@@ -19,3 +19,11 @@ class PDFException(Exception):
 
     def __str__(self):
         return f"{self.args[0]}(Error raised with code: {self.error})"
+
+class RepositoryException(Exception):
+    def __init__(self, message,error):
+        super().__init__(message)
+        self.error = error
+
+    def __str__(self):
+        return f"{self.args[0]}(Error raised with code: {self.error})"

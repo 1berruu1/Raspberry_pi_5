@@ -53,16 +53,6 @@ class Repository:
         """
         self.__data[PDFdata.getSerial()] = PDFdata
 
-class FileLogRepo:
-    def __init__(self,PDFdata):
-        self.__file = open(f'{PDFdata.getSerial()}-log.txt',"r")
-
-    def saveToFile(self, PDFdata):
-        with open(f'file-log-{PDFdata.getSerial()}.txt', 'w') as file:
-            for obj in PDFdata:
-                file.write(str(obj))
-
-
 
 
 class RepositorySQL:
@@ -95,7 +85,7 @@ class RepositorySQL:
         machineSerial = PDFdata.getSerial()
         airData = ",".join(map(str, PDFdata.getAirData()))
         lightData = PDFdata.getLightData()
-        soundData = PDFdata.getSoundData()
+        soundData = ",".join(map(str, PDFdata.getSoundData()))
         self.__cursor.execute(
             "INSERT INTO PDFData (MachineSerial, AirData, LightData, SoundData) VALUES (?, ?, ?, ?)",
             (machineSerial, airData, lightData, soundData)

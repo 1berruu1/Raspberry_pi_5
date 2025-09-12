@@ -6,8 +6,8 @@ from Repo import Repository, RepositorySQL
 
 
 if __name__ == '__main__':
-    testdata = PDFdata("SN1234567810",
-                       [69.6, 169.7, 269.8, 369.9, 470.0, 570.1, 670.2, 770.3, 870.4, 970.5, 1070.6, 1170.7, 1270.8,
+    testdata = PDFdata("SN1234567812",
+                       [169.7, 269.8, 369.9, 470.0, 570.1, 670.2, 770.3, 870.4, 970.5, 1070.6, 1170.7, 1270.8,
                         1370.9, 1471.0, 1571.1, 1671.2, 1771.3, 1871.4, 1971.5, 2071.6, 2171.7, 2271.8, 2371.9, 2472.0, 2572.1,
                         2672.2, 2772.3, 2872.4, 2972.5, 3072.6, 3172.7, 3272.8, 3372.9, 3473.0, 3573.1, 3673.2, 3773.3, 3873.4,
                         3973.5, 4073.6, 4173.7, 4273.8, 4373.9, 4474.0, 4574.1, 4674.2, 4774.3, 4874.4, 4974.5, 5074.6, 5174.7, 5274.8,
@@ -42,7 +42,8 @@ if __name__ == '__main__':
 
 # TESTING IN-MEMORY REPO and the Read/Parse functions
 
-    # readData = readSerial('COM10', 9600)
+    # readBTData = readSerial('COM15', 9600)
+    # readUSBData = readSerial('COM10', 9600)
 
     # Airdata = pasreData(readData)
     # print(Airdata)
@@ -56,9 +57,9 @@ if __name__ == '__main__':
     # pdfGenfunction(repo.get_data_by_serial("SN1234567810"))
     # sqlrepo.saveData(PDF)
     # print("PDF generated!")
-    # #
+
     # repo.saveData(testdata3)
-    # #
+    #
     # converted = voltToAirFlow(testdata3)
     # testdata3.setAirData(converted)
     # print(testdata3.getAirData())
@@ -68,5 +69,8 @@ if __name__ == '__main__':
 #
 #     new_sound_data = readSoundSensor("SoundReading.txt")
 #     testdata.setSoundData(new_sound_data)
-#     print(testdata.getSerial())
-#     print(testdata.getSoundData())
+#     sqlrepo.saveData(testdata)
+#   print(testdata.getSerial())
+#   print(testdata.getSoundData())
+
+

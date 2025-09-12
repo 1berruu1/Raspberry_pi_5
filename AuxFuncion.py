@@ -1,5 +1,3 @@
-import csv
-import itertools
 import time
 import serial
 from Exceptions import PDFException, SensorException
@@ -8,7 +6,21 @@ from reportlab.platypus import SimpleDocTemplate, Table, Spacer, Image
 import pandas as pd
 import matplotlib.pyplot as plt
 import tempfile
-import os
+import os, os.path
+import logging
+import cv2
+
+# Log file config used in every function
+
+logging.basicConfig(
+    format="%(asctime)s - %(name)s - %(levelname)-s - %(funcName)s - %(message)s ",
+    filename="log.txt",
+    level=logging.ERROR,
+    filemode="a",
+    datefmt="%d/%m/%Y %H:%M:%S"
+)
+
+
 # button = Button(4)
 
 
@@ -22,13 +34,23 @@ def readLightSensor():
 
 def readSoundSensor(file):
     """
-    Reads data from the sound sensor.
-    Returns:
-        The sensor reading (to be implemented).
-    """
-    values = pd.read_csv(file,skiprows=1, usecols=[2])
-    value_column_3 = values.iloc[:, 0].tolist()
-    return value_column_3
+      Reads the third column of a CSV file (skipping the header) and returns its values as a list.
+
+      Args:
+          file: Path to the CSV file containing sound sensor data.
+
+      Returns:
+          List of values from the third column of the CSV file.
+      """
+    try:
+        values = pd.read_csv(file,skiprows=1, usecols=[2])
+        value_column_3 = values.iloc[:, 0].tolist()
+        return value_column_3
+    except FileNotFoundError as e:
+        logging.error(e)
+        raise SensorException("File does not exist",234)
+
+
 
 
 
@@ -38,7 +60,22 @@ def cameraSerial():
     Returns:
         The camera serial data (to be implemented).
     """
-    pass
+
+    cam = cv2.VideoCapture(0)
+    detector = cv2.QRCodeDetector
+
+    while True:
+        _, img = cam.read()
+        data, bounding_box = detector.detectAndDecode(img)
+
+        if bounding_box is not None:
+            for i in range(len(bounding_box)):
+                cv2.line(img, tuple(bounding_box[i][0]), tuple(bounding_box(i, 1) % len(bounding_box)[0]), (255, 0, 0), 2)
+                cv2.putText(img,data,int(bounding_box[0][0][0]),int(bounding_box[0][0][1])-10), cv2.FONT_HERSHEY_PLAIN, 1,(255,255,255),2
+
+                if data:
+                    print("data found", data)
+
 
 def voltToAirFlow(PDFdata):
     """
@@ -52,15 +89,16 @@ def voltToAirFlow(PDFdata):
     """
     data = PDFdata.getAirData()
     results = []
-    voltage_error = 0.2
+
     for i in data:
         try:
             if 1.0 < i < 5.0:
                 results.append(round((i - 1 ) * 2, 2))
             else:
-                raise SensorException("test", 8)
+                logging.error("Voltage reading is out of range")
+                raise SensorException("Out of range", 8)
         except SensorException as e:
-            print(e)
+            logging.error(e)
     return results
 
 def pdfGenfunction(PDFdata):
@@ -91,6 +129,7 @@ def pdfGenfunction(PDFdata):
             elements.append(table)
             elements.append(Spacer(1, 20))
         except PDFException as e:
+            logging.error(e)
             raise PDFException("Error creating tables", 6)
 
         avg = sum(arr) / len(arr) if arr else 0
@@ -110,6 +149,7 @@ def pdfGenfunction(PDFdata):
         plt.title('Air Flux Table')
         plt.xlabel('Reading')
         plt.ylabel('Value')
+        plt.grid(True)
         plt.tight_layout()
 
         with tempfile.NamedTemporaryFile(delete=False, suffix='.png') as tmpfile:
@@ -119,6 +159,7 @@ def pdfGenfunction(PDFdata):
             elements.append(img)
             elements.append(Spacer(1, 40))
     except Exception as e:
+        logging.error(e)
         raise PDFException("Error drawing matplotlib plot", 360)
 
     try:
@@ -126,11 +167,12 @@ def pdfGenfunction(PDFdata):
         doc.build(elements)
         os.unlink(tmpfile.name)
     except PDFException as e:
+        logging.error(e)
         raise PDFException("Error building pdf", 302)
 
 def readSerial(port, baudrate, timeout=2):
     """
-    Reads lines from a serial port until a timeout occurs.
+    Reads lines from a serial port until a timeout occurs. Can be used for bluetooth communication
     Args:
         port: Serial port name (e.g., 'COM10').
         baudrate: Baud rate for serial communication.
@@ -143,7 +185,6 @@ def readSerial(port, baudrate, timeout=2):
     ser = serial.Serial(port, baudrate, timeout=0.1)
     lines = []
     timer = None
-
     try:
         while True:
             line = ser.readline().decode().rstrip()
@@ -152,11 +193,11 @@ def readSerial(port, baudrate, timeout=2):
                 timer = time.time()
             elif timer and time.time() - timer > timeout:
                 break
-            if not lines:
-                raise SensorException("error appending line", 456)
+
         return "\n".join(lines)
     except SensorException as e:
-        print(e)
+        logging.error(e)
+
 
 def pasreData(data):
     """
@@ -176,7 +217,8 @@ def pasreData(data):
             if part != '':
                 try:
                     values.append(float(part))
-                except ValueError:
-                    pass
+                except ValueError as e:
+                    logging.error(e)
         sensor_readings.append(values)
     return sensor_readings
+

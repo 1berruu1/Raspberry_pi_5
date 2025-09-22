@@ -56,9 +56,14 @@ def readSoundSensor(file):
 
 def cameraSerial():
     """
-    Handles serial communication with the camera.
+    Captures video from the default camera, detects and decodes QR codes in real time, and returns the decoded data.
+
+    The function opens the default camera, processes each video frame to detect and decode QR codes using OpenCV,
+    and displays the video feed with visual feedback. If a QR code is detected and decoded, the data is printed
+    to the console and returned. The function exits when a QR code is found or when the 'q' key is pressed.
+
     Returns:
-        The camera serial data (to be implemented).
+        str: The decoded QR code data if found, otherwise None.
     """
 
     cam = cv2.VideoCapture(0)
@@ -75,6 +80,14 @@ def cameraSerial():
 
                 if data:
                     print("data found", data)
+                    return data
+
+        cv2.imshow("camera", img)
+        if(cv2.waitKey(1) & 0xFF == ord('q')):
+            break
+
+    cam.release()
+    cv2.destroyAllWindows()
 
 
 def voltToAirFlow(PDFdata):

@@ -1,3 +1,5 @@
+import itertools
+
 import reportlab
 
 from AuxFuncion import pdfGenfunction, readSerial, pasreData, voltToAirFlow, readSoundSensor
@@ -42,17 +44,29 @@ if __name__ == '__main__':
 
 # TESTING IN-MEMORY REPO and the Read/Parse functions
 
-    # readBTData = readSerial('COM15', 9600)
+'''
+In memory repo for reading Serial from a port
+:param
+    COM10 the serial port for the usb connected device
+'''
+
     # readUSBData = readSerial('COM10', 9600)
 
-    # Airdata = pasreData(readData)
-    # print(Airdata)
     # PDF = PDFdata("SN1234567811",Airdata,379.5,45.6)
     # repo.saveData(PDF)
     # sqlrepo.saveData(PDF)
     # print(repo.get_data())
 
+
+
+
+
 # TESTING PDF GENERATION
+'''
+pdfGenFunction takes the serial of an scanned machine and it will generate a PDF based
+on that machines data.
+'''
+
 #     repo.saveData(testdata)
     # pdfGenfunction(repo.get_data_by_serial("SN1234567810"))
     # sqlrepo.saveData(PDF)
@@ -65,6 +79,11 @@ if __name__ == '__main__':
     # print(testdata3.getAirData())
 
 # SOUND DATA FUNCTION
+'''
+readSoundSensor is used in order to gather data from files that are formated by the software 
+for the Trotec SL400 audio software and it will read the file that is present in the same folder as the program
+
+'''
 #     repo.saveData(testdata)
 #
 #     new_sound_data = readSoundSensor("SoundReading.txt")
@@ -74,3 +93,22 @@ if __name__ == '__main__':
 #   print(testdata.getSoundData())
 
 
+
+
+# TESTING READING FROM BLUE TOOTH
+'''
+readBTData is the variable responsible for BT communication 
+the arduino sends it's data and the parseData puts in two lists(idk why) so we use an intermediary list 
+in order to get a full list of all the values
+
+:param
+    COM15 - is the port for the bluetooth module it can be different and it's certainly different for linux
+    9600 - is the baudrate for the bluetooth module it's default and should not be changed
+'''
+
+# readBTData = readSerial('COM15', 9600)
+#
+#
+# Airdata = pasreData(readBTData)
+# FullList = list(itertools.chain(*Airdata))
+# print(FullList)

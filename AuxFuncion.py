@@ -1,5 +1,6 @@
 import time
 import serial
+from picamera2 import Picamera2 #note only works on linux
 from Exceptions import PDFException, SensorException
 from reportlab.lib.pagesizes import letter
 from reportlab.platypus import SimpleDocTemplate, Table, Spacer, Image
@@ -66,18 +67,25 @@ def cameraSerial():
         str: The decoded QR code data if found, otherwise None.
     """
 
-    cam = cv2.VideoCapture(0)
+
+    picam2 = Picamera2()
+    picam2.start()
     detector = cv2.QRCodeDetector
 
     while True:
-        _, img = cam.read()
+        img = picam2.capture_array()
+        img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+
         data, bounding_box = detector.detectAndDecode(img)
 
-        if bounding_box is not None:
-            for i in range(len(bounding_box)):
-                cv2.line(img, tuple(bounding_box[i][0]), tuple(bounding_box(i, 1) % len(bounding_box)[0]), (255, 0, 0), 2)
-                cv2.putText(img,data,int(bounding_box[0][0][0]),int(bounding_box[0][0][1])-10), cv2.FONT_HERSHEY_PLAIN, 1,(255,255,255),2
 
+        if bounding_box is not None:
+            bounding_box = bounding_box.astype(int)
+            n = len(bounding_box)
+            for i in range(n):
+                pt1 =tuple(bounding_box[i][0])
+                pt2 =tuple(bounding_box[i][1])
+                cv2.line(img,pt1,pt2,color=(255,0,0),thickness=2)
                 if data:
                     print("data found", data)
                     return data
@@ -86,7 +94,6 @@ def cameraSerial():
         if(cv2.waitKey(1) & 0xFF == ord('q')):
             break
 
-    cam.release()
     cv2.destroyAllWindows()
 
 
